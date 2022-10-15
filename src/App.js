@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {Component, useState} from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+
+    const [ text, setText ] = useState("Wpisz date");
+
+    const handleDateChange = (e) => {
+        const value = e.target.value
+        fetch(`http://numbersapi.com/${value}/year?json`)
+            .then(res => {
+                if (res.ok) {
+                    return res;
+                }
+                throw Error()
+            })
+            .then(res => res.json())
+            .then(data => {
+                setText("W tym roku " + data.text)
+            })
+            .catch(err => {
+                setText("Jest problem :( " + err)
+            })
+    }
+
+    return (
+        <div>
+          <input
+          type={'text'}
+          onChange={handleDateChange}
+          />
+          <p>{text}</p>
+        </div>
+    )
 }
 
 export default App;
